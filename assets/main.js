@@ -204,10 +204,10 @@ async function addMatchFormHandler(e) {
         home_team: document.getElementById("home_team").value,
         away_team: document.getElementById("away_team").value,
         match_date: document.getElementById("match_date").value,
-        home_score: document.getElementById("home_score").value,
-        away_score: document.getElementById("away_score").value,
+        home_score: document.getElementById("home_score").value || null,
+        away_score: document.getElementById("away_score").value || null,
+        notes: document.getElementById("notes").value || null,
         status: document.getElementById("status").value,
-        notes: document.getElementById("notes").value
     };
 
     await addMatch(matchData);
