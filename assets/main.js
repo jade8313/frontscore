@@ -203,7 +203,10 @@ async function addMatchFormHandler(e) {
         home_team: document.getElementById("home_team").value,
         away_team: document.getElementById("away_team").value,
         match_date: document.getElementById("match_date").value,
-        status: document.getElementById("status").value
+        home_score: document.getElementById("home_score").value,
+        away_score: document.getElementById("away_score").value,
+        status: document.getElementById("status").value,
+        notes: document.getElementById("notes").value
     };
 
     await addMatch(matchData);
@@ -254,7 +257,6 @@ async function updateMatch(id, data) {
         showError("Impossible de modifier le match.");
     }
 }
-
 
 // --- Supprimer ---
 async function deleteMatch(id) {
