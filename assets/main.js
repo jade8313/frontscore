@@ -179,7 +179,7 @@ function updateHomePage(nextMatch, lastMatch) {
 async function initResultsPage() {
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/matches`);
+    const response = await fetch(`${API_BASE_URL}/api/match`);
 
     if (!response.ok) {
       throw new Error(`Erreur API (${response.status})`);
