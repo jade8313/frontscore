@@ -1,6 +1,6 @@
 // À adapter avec VOTRE URL Render
 
-const API_BASE_URL = "https://apiscore-votreprenom.onrender.com";
+const API_BASE_URL = "https://apiscore-o0uq.onrender.com/";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -42,7 +42,7 @@ async function initHomePage() {
 
   try {
 
-    const response = await fetch(`${API_BASE_URL}/api/matches`);
+    const response = await fetch(`${API_BASE_URL}api/match`);
 
     if (!response.ok) {
 
