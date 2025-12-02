@@ -1,250 +1,273 @@
-// À adapter avec VOTRE URL Render
-
+// URL de l'API
 const API_BASE_URL = "https://apiscore-o0uq.onrender.com/";
 
+// --- Initialisation selon la page ---
 document.addEventListener("DOMContentLoaded", () => {
+    const page = document.body.dataset.page;
 
-  const page = document.body.dataset.page;
+    if (page === "home") {
+        initHomePage();
 
-  if (page === "home") {
+    } else if (page === "results") {
+        initResultsPage();
 
-    initHomePage();
-
-  } else if (page === "results") {
-
-    initResultsPage();
-
-  }
-
+    } else if (page === "admin") {
+        loadMatches();
+        const form = document.getElementById("add-match-form");
+        if (form) {
+            form.addEventListener("submit", addMatchFormHandler);
+        }
+    }
 });
 
-// Affiche une erreur dans un élément <div id="error-message">
 
+// -----------------------------
+// 🔴 FONCTIONS UTILES
+// -----------------------------
 function showError(message) {
+    const div = document.getElementById("error-message");
 
-  const errorDiv = document.getElementById("error-message");
-
-  if (errorDiv) {
-
-    errorDiv.textContent = message;
-
-    errorDiv.classList.add("error");
-
-  } else {
-
-    alert(message);
-
-  }
-
-}
-
-async function initHomePage() {
-
-  try {
-
-    const response = await fetch(`${API_BASE_URL}api/match`);
-
-    if (!response.ok) {
-
-      throw new Error(`Erreur API (${response.status})`);
-
+    if (div) {
+        div.textContent = message;
+        div.style.color = "red";
+    } else {
+        alert(message);
     }
-
-    const matches = await response.json();
-
-    const now = new Date();
-
-    // Séparation des matchs joués et à venir
-
-    const played = matches.filter((m) =>
-
-      m.status === "played" && new Date(m.match_date) <= now
-
-    );
-
-    const scheduled = matches.filter((m) =>
-
-      m.status === "scheduled" && new Date(m.match_date) >= now
-
-    );
-
-    // Dernier match joué = le plus récent dans le passé
-
-    let lastMatch = null;
-
-    if (played.length > 0) {
-
-      played.sort(
-
-        (a, b) => new Date(a.match_date) - new Date(b.match_date)
-
-      );
-
-      lastMatch = played[played.length - 1];
-
-    }
-
-    // Prochain match = le plus proche dans le futur
-
-    let nextMatch = null;
-
-    if (scheduled.length > 0) {
-
-      scheduled.sort(
-
-        (a, b) => new Date(a.match_date) - new Date(b.match_date)
-
-      );
-
-      nextMatch = scheduled[0];
-
-    }
-
-    updateHomePage(nextMatch, lastMatch);
-
-  } catch (error) {
-
-    console.error(error);
-
-    showError("Impossible de charger les données (API ou réseau indisponible).");
-
-  }
-
 }
 
 function formatMatchDate(dateString) {
+    const d = new Date(dateString);
+    return `${d.getDate().toString().padStart(2,"0")}/${(d.getMonth()+1).toString().padStart(2,"0")}/${d.getFullYear()} ${d.getHours()}h${d.getMinutes().toString().padStart(2,"0")}`;
+}
 
-  const date = new Date(dateString);
 
-  // Affichage simple : JJ/MM/AAAA HH:MM
 
-  const day = String(date.getDate()).padStart(2, "0");
+// ===================================================================
+// 🏠 PAGE HOME
+// ===================================================================
+async function initHomePage() {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/match`);
+        if (!response.ok) throw new Error();
+        const matches = await response.json();
 
-  const month = String(date.getMonth() + 1).padStart(2, "0");
+        const now = new Date();
 
-  const year = date.getFullYear();
+        const played = matches.filter(m => m.status === "played" && new Date(m.match_date) <= now);
+        const scheduled = matches.filter(m => m.status === "scheduled" && new Date(m.match_date) >= now);
 
-  const hours = String(date.getHours()).padStart(2, "0");
+        let lastMatch = null;
+        if (played.length > 0) {
+            played.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+            lastMatch = played[played.length - 1];
+        }
 
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+        let nextMatch = null;
+        if (scheduled.length > 0) {
+            scheduled.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+            nextMatch = scheduled[0];
+        }
 
-  return `${day}/${month}/${year} ${hours}h${minutes}`;
+        updateHomePage(nextMatch, lastMatch);
 
+    } catch (err) {
+        console.error(err);
+        showError("Impossible de charger les données (API indisponible).");
+    }
 }
 
 function updateHomePage(nextMatch, lastMatch) {
+    const nextDiv = document.getElementById("next-match");
+    const lastDiv = document.getElementById("last-match");
 
-  const nextDiv = document.getElementById("next-match");
+    // Prochain match
+    if (nextMatch) {
+        nextDiv.innerHTML = `
+            <p><strong>${nextMatch.home_team}</strong> vs <strong>${nextMatch.away_team}</strong></p>
+            <p>Date : ${formatMatchDate(nextMatch.match_date)}</p>
+            <p>Statut : <span class="status-${nextMatch.status}">${nextMatch.status}</span></p>
+        `;
+    } else nextDiv.innerHTML = "<p>Aucun match à venir trouvé.</p>";
 
-  const lastDiv = document.getElementById("last-match");
+    // Dernier match
+    if (lastMatch) {
+        const score = (lastMatch.home_score != null && lastMatch.away_score != null)
+            ? `${lastMatch.home_score} - ${lastMatch.away_score}`
+            : "Score non renseigné";
 
-  // Prochain match
-
-  if (nextMatch) {
-
-    nextDiv.innerHTML = `
-
-      <p><strong>${nextMatch.home_team}</strong> vs <strong>${nextMatch.away_team}</strong></p>
-
-      <p>Date : ${formatMatchDate(nextMatch.match_date)}</p>
-      <p>Statut : <span class="status-${nextMatch.status}">${nextMatch.status}</span></p>
-    `;
-
-  } else {
-    nextDiv.innerHTML = "<p>Aucun match à venir trouvé.</p>";
-  }
-
-  // Dernier match
-
-  if (lastMatch) {
-
-    let score = "Score non renseigné";
-    if (lastMatch.home_score != null && lastMatch.away_score != null) {
-      score = `${lastMatch.home_score} - ${lastMatch.away_score}`;
-    }
-
-    lastDiv.innerHTML = `
-      <p><strong>${lastMatch.home_team}</strong> vs <strong>${lastMatch.away_team}</strong></p>
-
-      <p>Date : ${formatMatchDate(lastMatch.match_date)}</p>
-      <p>Score : ${score}</p>
-      <p>Statut : <span class="status-${lastMatch.status}">${lastMatch.status}</span></p>
-    `;
-
-  } else {
-    lastDiv.innerHTML = "<p>Aucun match joué trouvé.</p>";
-  }
+        lastDiv.innerHTML = `
+            <p><strong>${lastMatch.home_team}</strong> vs <strong>${lastMatch.away_team}</strong></p>
+            <p>Date : ${formatMatchDate(lastMatch.match_date)}</p>
+            <p>Score : ${score}</p>
+            <p>Statut : <span class="status-${lastMatch.status}">${lastMatch.status}</span></p>
+        `;
+    } else lastDiv.innerHTML = "<p>Aucun match joué trouvé.</p>";
 }
 
+
+
+// ===================================================================
+// 📋 PAGE RESULTS
+// ===================================================================
 async function initResultsPage() {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/match`);
+        if (!response.ok) throw new Error();
+        const matches = await response.json();
 
-  try {
-    const response = await fetch(`${API_BASE_URL}api/match`);
+        renderResults(matches);
 
-    if (!response.ok) {
-      throw new Error(`Erreur API (${response.status})`);
+    } catch (err) {
+        console.error(err);
+        showError("Impossible de charger la liste des matchs.");
     }
-
-    const matches = await response.json();
-    renderMatchesTable(matches);
-
-  } catch (error) {
-
-    console.error(error);
-    showError("Impossible de charger la liste des matchs.");
-  }
 }
 
-function renderMatchesTable(matches) {
+function renderResults(matches) {
+    const tbody = document.getElementById("matches-body");
+    tbody.innerHTML = "";
 
-  const tbody = document.getElementById("matches-body");
-  tbody.innerHTML = ""; // on vide d'abord
-
-  if (!matches || matches.length === 0) {
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.colSpan = 5;
-    td.textContent = "Aucun match trouvé dans la base.";
-    tr.appendChild(td);
-    tbody.appendChild(tr);
-
-    return;
-  }
-
-  // Option : trier par date croissante
-  matches.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
-
-  matches.forEach((match) => {
-    const tr = document.createElement("tr");
-
-    const dateTd = document.createElement("td");
-    dateTd.textContent = formatMatchDate(match.match_date);
-
-    const homeTd = document.createElement("td");
-    homeTd.textContent = match.home_team;
-
-    const awayTd = document.createElement("td");
-    awayTd.textContent = match.away_team;
-
-    const scoreTd = document.createElement("td");
-
-    if (match.home_score != null && match.away_score != null) {
-      scoreTd.textContent = `${match.home_score} - ${match.away_score}`;
-    } else {
-      scoreTd.textContent = "—";
+    if (!matches || matches.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.textContent = "Aucun match trouvé.";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
     }
 
-    const statusTd = document.createElement("td");
+    matches.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
 
-    statusTd.textContent = match.status;
-    statusTd.classList.add(`status-${match.status}`);
-    tr.appendChild(dateTd);
-    tr.appendChild(homeTd);
-    tr.appendChild(awayTd);
-    tr.appendChild(scoreTd);
-    tr.appendChild(statusTd);
-    tbody.appendChild(tr);
+    matches.forEach(match => {
+        const tr = document.createElement("tr");
 
-  });
+        tr.innerHTML = `
+            <td>${formatMatchDate(match.match_date)}</td>
+            <td>${match.home_team}</td>
+            <td>${match.away_team}</td>
+            <td>${match.home_score ?? "—"} - ${match.away_score ?? "—"}</td>
+            <td class="status-${match.status}">${match.status}</td>
+        `;
 
+        tbody.appendChild(tr);
+    });
+}
+
+
+
+// ===================================================================
+// 🔑 PAGE ADMIN
+// ===================================================================
+async function loadMatches() {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/match`);
+        const matches = await response.json();
+        renderAdminTable(matches);
+    } catch (err) {
+        showError("Impossible de charger les matchs.");
+    }
+}
+
+function renderAdminTable(matches) {
+    const tbody = document.getElementById("matches-admin-body");
+    tbody.innerHTML = "";
+
+    matches.sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+
+    matches.forEach(match => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${formatMatchDate(match.match_date)}</td>
+            <td>${match.home_team}</td>
+            <td>${match.away_team}</td>
+            <td>${match.home_score ?? "-"} - ${match.away_score ?? "-"}</td>
+            <td>${match.status}</td>
+            <td>
+                <button class="btn btn-edit" onclick="editMatch(${match.id})">Modifier</button>
+                <button class="btn btn-delete" onclick="deleteMatch(${match.id})">Supprimer</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+
+// --- Ajouter un match ---
+async function addMatchFormHandler(e) {
+    e.preventDefault();
+
+    const matchData = {
+        home_team: document.getElementById("home_team").value,
+        away_team: document.getElementById("away_team").value,
+        match_date: document.getElementById("match_date").value,
+        status: document.getElementById("status").value
+    };
+
+    await addMatch(matchData);
+    loadMatches();
+}
+
+async function addMatch(data) {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/match`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error();
+    } catch (err) {
+        showError("Impossible d’ajouter le match.");
+    }
+}
+
+
+// --- Modifier un match ---
+async function editMatch(id) {
+    const home_score = prompt("Score équipe domicile :");
+    const away_score = prompt("Score équipe extérieur :");
+    const status = prompt("Statut (scheduled / played) :");
+
+    const data = {
+        home_score: home_score ? Number(home_score) : null,
+        away_score: away_score ? Number(away_score) : null,
+        status: status || "played"
+    };
+
+    await updateMatch(id, data);
+    loadMatches();
+}
+
+async function updateMatch(id, data) {
+    try {
+        const response = await fetch(`${API_BASE_URL}api/match/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error();
+    } catch (err) {
+        showError("Impossible de modifier le match.");
+    }
+}
+
+
+// --- Supprimer ---
+async function deleteMatch(id) {
+    if (!confirm("Supprimer ce match ?")) return;
+
+    try {
+        await fetch(`${API_BASE_URL}api/match/${id}`, {
+            method: "DELETE"
+        });
+
+        loadMatches();
+
+    } catch (err) {
+        showError("Impossible de supprimer le match.");
+    }
 }
