@@ -230,11 +230,15 @@ async function addMatch(data) {
 
 // --- Modifier un match ---
 async function editMatch(id) {
+    const home_team = prompt(" équipe domicile :");
+    const away_team = prompt(" équipe extérieur :");
     const home_score = prompt("Score équipe domicile :");
     const away_score = prompt("Score équipe extérieur :");
     const status = prompt("Statut (scheduled / played) :");
 
     const data = {
+        home_team: home_team ? Text(home_team) : null,
+        away_team: home_team ? Text(away_team) : null,
         home_score: home_score ? Number(home_score) : null,
         away_score: away_score ? Number(away_score) : null,
         status: status || "played"
