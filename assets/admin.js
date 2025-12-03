@@ -52,8 +52,11 @@ async function addMatchFormHandler(e) {
     const matchData = {
         home_team: document.getElementById("home_team").value,
         away_team: document.getElementById("away_team").value,
+        home_score: document.getElementById("home_score").value,
+        away_score: document.getElementById("away_score").value,
         match_date: document.getElementById("match_date").value,
-        status: document.getElementById("status").value
+        status: document.getElementById("status").value,
+        notes: document.getElementById("notes").value
     };
 
     await addMatch(matchData);
@@ -80,12 +83,17 @@ async function addMatch(data) {
 async function editMatch(id) {
     const home_score = prompt("Score équipe domicile :");
     const away_score = prompt("Score équipe extérieur :");
+    const home_team = prompt(" équipe domicile :");
+    const away_team = prompt(" équipe extérieur :");
     const status = prompt("Statut (scheduled / played) :");
 
     const updateData = {
         home_score: home_score ? Number(home_score) : null,
         away_score: away_score ? Number(away_score) : null,
-        status: status || "played"
+        home_team: home_team ? Text(home_team) : null,
+        away_team: away_team ? Text(away_team) : null,
+        status: status || "played",
+        notes: notes ? Text(notes) : null,
     };
 
     await updateMatch(id, updateData);
