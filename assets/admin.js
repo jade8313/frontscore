@@ -81,21 +81,30 @@ async function addMatch(data) {
 // Modifier un match
 // -------------------------
 async function editMatch(id) {
-    const home_score = prompt("Score équipe domicile :");
-    const away_score = prompt("Score équipe extérieur :");
-    const home_team = prompt(" équipe domicile :");
-    const away_team = prompt(" équipe extérieur :");
-    const status = prompt("Statut (scheduled / played) :");
 
+    // 1. Récupérer le match actuel
+    const res = await fetch(`${API_BASE_URL}api/match/${id}`);
+    const match = await res.json();
+
+    // 2. Demander les nouvelles valeurs
+    const home_team = prompt("Équipe domicile :", match.home_team);
+    const away_team = prompt("Équipe extérieur :", match.away_team);
+    const home_score = prompt("Score équipe domicile :", match.home_score);
+    const away_score = prompt("Score équipe extérieur :", match.away_score);
+    const status = prompt("Statut (scheduled / played) :", match.status);
+    const notes = prompt("Notes :", match.notes ?? "");
+
+    // 3. Construire l'objet à envoyer
     const updateData = {
+        home_team: home_team,
+        away_team: away_team,
         home_score: home_score ? Number(home_score) : null,
         away_score: away_score ? Number(away_score) : null,
-        home_team: home_team || null,
-        away_team: away_team || null,
-        status: status || "played",
-        notes: notes || null,
+        status: status || match.status,
+        notes: notes
     };
 
+    // 4. Envoyer au serveur
     await updateMatch(id, updateData);
     loadMatches();
 }
