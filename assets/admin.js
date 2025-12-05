@@ -90,7 +90,6 @@ async function editMatch(id) {
     const home_score = prompt("Score équipe domicile :", match.home_score);
     const away_score = prompt("Score équipe extérieur :", match.away_score);
     const status = prompt("Statut (scheduled / played) :", match.status);
-    const notes = prompt("Notes :", match.notes);
     const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
 
     const updateData = {
@@ -99,7 +98,6 @@ async function editMatch(id) {
         home_score: home_score ? Number(home_score) : match.home_score,
         away_score: away_score ? Number(away_score) : match.away_score,
         status: status || match.status,
-        notes: notes || match.notes,
         match_date: match_date || match.match_date   // ⬅ jamais vide !
     };
 
