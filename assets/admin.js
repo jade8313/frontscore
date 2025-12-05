@@ -91,7 +91,7 @@ async function editMatch(id) {
     const home_score = prompt("Score équipe domicile :", match.home_score);
     const away_score = prompt("Score équipe extérieur :", match.away_score);
     const status = prompt("Statut (scheduled / played) :", match.status);
-    const notes = prompt("Notes :", match.notes ?? "");
+    const notes = prompt("Notes :", match.notes);
     const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
 
     const updateData = {
