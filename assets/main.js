@@ -187,7 +187,7 @@ function renderAdminTable(matches) {
             <td>${match.status}</td>
             <td>${match.notes}</td>
             <td>
-                <button class="btn btn-edit" onclick="editMatch(${match.id})">Modifier</button>
+                <button class="btn btn-edit" onclick="onclick="editMatch(Number(${match.id}))"">Modifier</button>
                 <button class="btn btn-delete" onclick="deleteMatch(${match.id})">Supprimer</button>
             </td>
         `;
