@@ -230,43 +230,43 @@ async function addMatch(data) {
 }
 
 
-// --- Modifier un match ---
-async function editMatch(id) {
-    const home_team = prompt("Équipe domicile :", match.home_team);
-    const away_team = prompt("Équipe extérieur :", match.away_team);
-    const home_score = prompt("Score équipe domicile :", match.home_score);
-    const away_score = prompt("Score équipe extérieur :", match.away_score);
-    const status = prompt("Statut (scheduled / played) :", match.status);
-    const notes = prompt("Notes :", match.notes);
-    const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
+// // --- Modifier un match ---
+// async function editMatch(id) {
+//     const home_team = prompt("Équipe domicile :", match.home_team);
+//     const away_team = prompt("Équipe extérieur :", match.away_team);
+//     const home_score = prompt("Score équipe domicile :", match.home_score);
+//     const away_score = prompt("Score équipe extérieur :", match.away_score);
+//     const status = prompt("Statut (scheduled / played) :", match.status);
+//     const notes = prompt("Notes :", match.notes);
+//     const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
 
-    const updateData = {
-        home_team: home_team || match.home_team,
-        away_team: away_team || match.away_team,
-        home_score: home_score ? Number(home_score) : match.home_score,
-        away_score: away_score ? Number(away_score) : match.away_score,
-        status: status || match.status,
-        notes: notes || match.notes,
-        match_date: match_date || match.match_date   // ⬅ jamais vide !
-    };
+//     const updateData = {
+//         home_team: home_team || match.home_team,
+//         away_team: away_team || match.away_team,
+//         home_score: home_score ? Number(home_score) : match.home_score,
+//         away_score: away_score ? Number(away_score) : match.away_score,
+//         status: status || match.status,
+//         notes: notes || match.notes,
+//         match_date: match_date || match.match_date   // ⬅ jamais vide !
+//     };
 
-    await updateMatch(id, data);
-    loadMatches();
-}
+//     await updateMatch(id, data);
+//     loadMatches();
+// }
 
-async function updateMatch(id, data) {
-    try {
-        const response = await fetch(`${API_BASE_URL}api/match/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
+// async function updateMatch(id, data) {
+//     try {
+//         const response = await fetch(`${API_BASE_URL}api/match/${id}`, {
+//             method: "PUT",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(data)
+//         });
 
-        if (!response.ok) throw new Error();
-    } catch (err) {
-        showError("Impossible de modifier le match.");
-    }
-}
+//         if (!response.ok) throw new Error();
+//     } catch (err) {
+//         showError("Impossible de modifier le match.");
+//     }
+// }
 
 // --- Supprimer ---
 async function deleteMatch(id) {
