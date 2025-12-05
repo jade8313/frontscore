@@ -82,34 +82,32 @@ async function addMatch(data) {
 // -------------------------
 async function editMatch(id) {
 
-    // 1. Récupérer le match actuel
+    // récupérer le match existant
     const res = await fetch(`${API_BASE_URL}api/match/${id}`);
     const match = await res.json();
 
-    // 2. Demander les nouvelles valeurs
     const home_team = prompt("Équipe domicile :", match.home_team);
     const away_team = prompt("Équipe extérieur :", match.away_team);
     const home_score = prompt("Score équipe domicile :", match.home_score);
     const away_score = prompt("Score équipe extérieur :", match.away_score);
     const status = prompt("Statut (scheduled / played) :", match.status);
     const notes = prompt("Notes :", match.notes ?? "");
-    const match_date = prompt("date du match :", match.match_date ?? "");
+    const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
 
-    // 3. Construire l'objet à envoyer
     const updateData = {
-        home_team: home_team,
-        away_team: away_team,
-        home_score: home_score ? Number(home_score) : null,
-        away_score: away_score ? Number(away_score) : null,
+        home_team: home_team || match.home_team,
+        away_team: away_team || match.away_team,
+        home_score: home_score ? Number(home_score) : match.home_score,
+        away_score: away_score ? Number(away_score) : match.away_score,
         status: status || match.status,
-        notes: notes,
-        match_date: match_date
+        notes: notes || match.notes,
+        match_date: match_date || match.match_date   // ⬅ jamais vide !
     };
 
-    // 4. Envoyer au serveur
     await updateMatch(id, updateData);
     loadMatches();
 }
+
 
 async function updateMatch(id, data) {
     try {
