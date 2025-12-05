@@ -93,6 +93,7 @@ async function editMatch(id) {
     const away_score = prompt("Score équipe extérieur :", match.away_score);
     const status = prompt("Statut (scheduled / played) :", match.status);
     const notes = prompt("Notes :", match.notes ?? "");
+    const match_date = prompt("date du match :", match.match_date ?? "");
 
     // 3. Construire l'objet à envoyer
     const updateData = {
@@ -101,7 +102,8 @@ async function editMatch(id) {
         home_score: home_score ? Number(home_score) : null,
         away_score: away_score ? Number(away_score) : null,
         status: status || match.status,
-        notes: notes
+        notes: notes,
+        match_date: match_date
     };
 
     // 4. Envoyer au serveur
