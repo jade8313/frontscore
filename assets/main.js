@@ -232,18 +232,22 @@ async function addMatch(data) {
 
 // --- Modifier un match ---
 async function editMatch(id) {
-    const home_team = prompt(" équipe domicile :");
-    const away_team = prompt(" équipe extérieur :");
-    const home_score = prompt("Score équipe domicile :");
-    const away_score = prompt("Score équipe extérieur :");
-    const status = prompt("Statut (scheduled / played) :");
+    const home_team = prompt("Équipe domicile :", match.home_team);
+    const away_team = prompt("Équipe extérieur :", match.away_team);
+    const home_score = prompt("Score équipe domicile :", match.home_score);
+    const away_score = prompt("Score équipe extérieur :", match.away_score);
+    const status = prompt("Statut (scheduled / played) :", match.status);
+    const notes = prompt("Notes :", match.notes);
+    const match_date = prompt("Date du match (YYYY-MM-DD HH:MM:SS) :", match.match_date);
 
-    const data = {
-        home_team: home_team || null,
-        away_team: away_team || null,
-        home_score: home_score ? Number(home_score) : null,
-        away_score: away_score ? Number(away_score) : null,
-        status: status || "played"
+    const updateData = {
+        home_team: home_team || match.home_team,
+        away_team: away_team || match.away_team,
+        home_score: home_score ? Number(home_score) : match.home_score,
+        away_score: away_score ? Number(away_score) : match.away_score,
+        status: status || match.status,
+        notes: notes || match.notes,
+        match_date: match_date || match.match_date   // ⬅ jamais vide !
     };
 
     await updateMatch(id, data);
