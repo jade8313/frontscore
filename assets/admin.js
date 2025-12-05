@@ -56,7 +56,6 @@ async function addMatchFormHandler(e) {
         away_score: document.getElementById("away_score").value,
         match_date: document.getElementById("match_date").value,
         status: document.getElementById("status").value,
-        notes: document.getElementById("notes").value
     };
 
     await addMatch(matchData);
