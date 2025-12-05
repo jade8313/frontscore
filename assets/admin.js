@@ -90,10 +90,10 @@ async function editMatch(id) {
     const updateData = {
         home_score: home_score ? Number(home_score) : null,
         away_score: away_score ? Number(away_score) : null,
-        home_team: home_team ? Text(home_team) : null,
-        away_team: away_team ? Text(away_team) : null,
+        home_team: home_team || null,
+        away_team: away_team || null,
         status: status || "played",
-        notes: notes ? Text(notes) : null,
+        notes: notes || null,
     };
 
     await updateMatch(id, updateData);
