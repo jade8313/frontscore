@@ -47,7 +47,7 @@ function formatMatchDate(dateString) {
 // ===================================================================
 async function initHomePage() {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`);
+        const response = await fetch(`${API_BASE_URL}api/matches`);
         if (!response.ok) throw new Error();
         const matches = await response.json();
 
@@ -111,7 +111,7 @@ function updateHomePage(nextMatch, lastMatch) {
 // ===================================================================
 async function initResultsPage() {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`);
+        const response = await fetch(`${API_BASE_URL}api/matches`);
         if (!response.ok) throw new Error();
         const matches = await response.json();
 
@@ -162,7 +162,7 @@ function renderResults(matches) {
 // ===================================================================
 async function loadMatches() {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`);
+        const response = await fetch(`${API_BASE_URL}api/matches`);
         const matches = await response.json();
         renderAdminTable(matches);
     } catch (err) {
@@ -217,7 +217,7 @@ async function addMatchFormHandler(e) {
 
 async function addMatch(data) {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`, {
+        const response = await fetch(`${API_BASE_URL}api/matches`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -256,7 +256,7 @@ async function addMatch(data) {
 
 // async function updateMatch(id, data) {
 //     try {
-//         const response = await fetch(`${API_BASE_URL}api/match/${id}`, {
+//         const response = await fetch(`${API_BASE_URL}api/matches/${id}`, {
 //             method: "PUT",
 //             headers: { "Content-Type": "application/json" },
 //             body: JSON.stringify(data)
@@ -273,7 +273,7 @@ async function deleteMatch(id) {
     if (!confirm("Supprimer ce match ?")) return;
 
     try {
-        await fetch(`${API_BASE_URL}api/match/${id}`, {
+        await fetch(`${API_BASE_URL}api/matches/${id}`, {
             method: "DELETE"
         });
 

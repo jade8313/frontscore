@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------------------------
 async function loadMatches() {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`);
+        const response = await fetch(`${API_BASE_URL}api/matches`);
         const matches = await response.json();
         renderAdminTable(matches);
     } catch (error) {
@@ -56,6 +56,7 @@ async function addMatchFormHandler(e) {
         away_score: document.getElementById("away_score").value,
         match_date: document.getElementById("match_date").value,
         status: document.getElementById("status").value,
+        notes: document.getElementById("notes").value,
     };
 
     await addMatch(matchData);
@@ -64,7 +65,7 @@ async function addMatchFormHandler(e) {
 
 async function addMatch(data) {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match`, {
+        const response = await fetch(`${API_BASE_URL}api/matches`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -82,7 +83,7 @@ async function addMatch(data) {
 async function editMatch(id) {
 
     // récupérer le match existant
-    const res = await fetch(`${API_BASE_URL}api/match/${id}`);
+    const res = await fetch(`${API_BASE_URL}api/matches/${id}`);
     const match = await res.json();
 
     const home_team = prompt("Équipe domicile :", match.home_team);
@@ -110,7 +111,7 @@ async function editMatch(id) {
 
 async function updateMatch(id, data) {
     try {
-        const response = await fetch(`${API_BASE_URL}api/match/${id}`, {
+        const response = await fetch(`${API_BASE_URL}api/matches/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -129,7 +130,7 @@ async function deleteMatch(id) {
     if (!confirm("Supprimer ce match ?")) return;
 
     try {
-        await fetch(`${API_BASE_URL}api/match/${id}`, {
+        await fetch(`${API_BASE_URL}api/matches/${id}`, {
             method: "DELETE"
         });
 
