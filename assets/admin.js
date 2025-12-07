@@ -33,6 +33,7 @@ function renderAdminTable(matches) {
             <td>${match.away_team}</td>
             <td>${match.home_score ?? "-"} - ${match.away_score ?? "-"}</td>
             <td>${match.status}</td>
+            <td>${match.notes}</td>
             <td>
                 <button class="btn btn-edit" onclick="editMatch(${match.id})">Modifier</button>
                 <button class="btn btn-delete" onclick="deleteMatch(${match.id})">Supprimer</button>
