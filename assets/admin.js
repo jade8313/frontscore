@@ -102,7 +102,7 @@ async function editMatch(id) {
         away_score: away_score ? Number(away_score) : match.away_score,
         status: status || match.status,
         notes: notes || match.notes,
-        match_date: match_date || match.match_date   // ⬅ jamais vide !
+        match_date: match_date || match.match_date
     };
 
     await updateMatch(id, updateData);
