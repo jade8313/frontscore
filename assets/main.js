@@ -147,8 +147,8 @@ function renderResults(matches) {
             <td>${match.home_team}</td>
             <td>${match.away_team}</td>
             <td>${match.home_score ?? "—"} - ${match.away_score ?? "—"}</td>
-            <td>${match.notes ?? "—"}</td>
             <td class="status-${match.status}">${match.status}</td>
+            <td>${match.notes ?? "—"}</td>
         `;
 
         tbody.appendChild(tr);
